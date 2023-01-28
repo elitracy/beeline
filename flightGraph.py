@@ -15,7 +15,9 @@ with open("flights.json") as file:
 
 # Create an empty dictionary for the adjacency list
 timeGraph = Graph()
-# priceGraph = Graph()
+priceGraph = Graph()
+
+adj_list = defaultdict(list)
 
 # Iterate over the rows of the JSON data
 # Shuffle the data
@@ -30,15 +32,15 @@ for row in data[:800]:
     print(time)
     # print(time_zone)
     # Cost function based on distance, adding extra weight if in popular cities set and also having a random aspect to it
-    # price = ((distance * 0.1 if origin in popularCities else random.randint(100, 400))) / 2
+    price = ((distance * 0.1 if origin in popularCities else random.randint(100, 400))) / 2
     
-    # distance = distance / 1000.0# 
+    distance = distance / 1000.0
     # weightList.append(distance)
     # distanceGraph.add_edge(origin, destination, distance)
-    # priceGraph.add_edge(origin, destination, price)
+    priceGraph.add_edge(origin, destination, price)
         
-    # # Add the destination to the list of values associated with the origin key
-    # adj_list[origin].append( (destination,distance,price) )
+    # Add the destination to the list of values associated with the origin key
+    adj_list[origin].append( (destination,distance,price) )
 
 
 
@@ -48,12 +50,14 @@ for row in data[:800]:
 #     shortestDist.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
 
 
-# # print("Distance Graph:")
+# print("Distance Graph:")
 
 # distanceGraph.remove_edge("ORD", "IAH")
-# # print(path.__getattribute__('total_cost'))
+# print(path.__getattribute__('total_cost'))
 # print(adj_list['ORD'])
 
 
 # print("Price Graph:")
 # print(find_path(priceGraph, "ORD", "IAH"))
+
+# print(data.get(arrivalTime))
