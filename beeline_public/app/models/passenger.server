@@ -1,0 +1,34 @@
+type Flights = {
+  source_airport: String,
+  destination_airport: String,
+  departure_time: String,
+  arrival_time: String,
+  duration: String,
+}
+
+export async function getFlights(): Promise<Array<Flights>> {
+  return [
+
+    {
+      source_airport: "JFK",
+      destination_airport: "LAX",
+      departure_time: "2022-09-01 10:00",
+      arrival_time: "2022-09-01 13:00",
+      duration: "3 hours"
+    },
+    {
+      source_airport: "LAX",
+      destination_airport: "SFO",
+      departure_time: "2022-09-01 14:00",
+      arrival_time: "2022-09-01 15:00",
+      duration: "1 hour"
+    },
+    {
+      source_airport: "SFO",
+      destination_airport: "ORD",
+      departure_time: "2022-09-01 16:00",
+      arrival_time: "2022-09-01 19:00",
+      duration: "3 hours"
+    }
+  ];
+}
