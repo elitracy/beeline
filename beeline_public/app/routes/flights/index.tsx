@@ -1,19 +1,25 @@
 import { json, LoaderArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getAllAirplanesByPassenger, getAllAirportsByPassenger } from "~/models/passenger.server";
+import { getAllAirplanesByPassenger, getAllAirportsByPassenger, getAltFlights } from "~/models/passenger.server";
 import { getPassengerId } from "~/session.server";
 import planeIcon from "public/plane.png";
+import type { Flight } from "~/models/passenger.server"
 
 
 export const loader = async ({ request }: LoaderArgs) => {
   const id = await getPassengerId(request);
   const airplanes = await getAllAirplanesByPassenger(id)
   const airports = await getAllAirportsByPassenger(id)
-  return { airplanes, airports }
+
+  let altFlights: Flight[] = []
+  for (let a in airports) {
+    altFlights.push(await getAltFlights(a, a))
+  }
+  return { airplanes, airports, altFlights }
 };
 
 export default function flights() {
-  const { airplanes, airports } = useLoaderData<typeof loader>();
+  const { airplanes, airports, altFlights } = useLoaderData<typeof loader>();
 
   const flights = airplanes.map((plane, i) => {
     const departure_airport = airports[i];
@@ -41,7 +47,7 @@ export default function flights() {
   });
 
   return (
-    <main className="w-full h-full">
+    <main className="w-full h-full overflow-hidden">
       <div className="w-1/2 h-1/2 mx-auto">
         <h1 className="text-center text-xl mb-3">Flights</h1>
         <div className="flex flex-col justify-center items-center">
@@ -61,6 +67,7 @@ export default function flights() {
             ))}
           </div>
         </div>
+
       </div>
     </main>
   );

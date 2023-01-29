@@ -18,7 +18,9 @@ async function seed() {
       airports: {
         create: [
           { name: "IAH", city: "Houston", state: "TX", country: "USA" },
-          { name: "RNO", city: "Reno", state: "NV", country: "USA" }
+          { name: "RNO", city: "Reno", state: "NV", country: "USA" },
+          { name: "SET", city: "Seattle", state: "WA", country: "USA" },
+          { name: "SFO", city: "San Fransisco", state: "CA", country: "USA" }
         ]
       },
       airplanes: {
@@ -27,7 +29,33 @@ async function seed() {
             departure_time: new Date("2022-06-01T09:00:00.000Z"),
             arrival_time: new Date("2022-06-01T12:00:00.000Z"),
             airports: {
-              connect: [{ name: "IAH" }, { name: "RNO" }]
+              connect: [{ name: "IAH" }, { name: "RNO" }, { name: "SET" }, { name: "SFO" }]
+            },
+            seats: {
+              create: [
+                { seat_number: 1, seat_row: 1, seat_class: "economy" },
+                { seat_number: 2, seat_row: 1, seat_class: "economy" }
+              ]
+            }
+          },
+          {
+            departure_time: new Date("2022-06-01T09:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            airports: {
+              connect: [{ name: "RNO" }, { name: "SET" }]
+            },
+            seats: {
+              create: [
+                { seat_number: 1, seat_row: 1, seat_class: "economy" },
+                { seat_number: 2, seat_row: 1, seat_class: "economy" }
+              ]
+            }
+          },
+          {
+            departure_time: new Date("2022-06-01T09:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            airports: {
+              connect: [{ name: "SET" }, { name: "SFO" }]
             },
             seats: {
               create: [
