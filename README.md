@@ -1,6 +1,6 @@
 # Beeline
 
-#Running instructions 
+Running instructions 
 
 Open the terminal and run the following commands:
 ```bash
