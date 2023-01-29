@@ -8,6 +8,10 @@ export default function Index() {
   const user = useOptionalUser();
   return (
     <main className="relative min-h-screen bg-white sm:flex sm:items-center sm:justify-center">
+      <img
+        src="images/hexagon.jpg"
+        sizes="(max-width: 500px) 100px, 600px"
+      />
       <div className="relative sm:pb-16 sm:pt-8">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="relative shadow-2xl sm:overflow-hidden sm:rounded-3xl">
