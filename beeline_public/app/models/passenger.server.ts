@@ -15,14 +15,30 @@ export type Passenger = {
   airports: Airport[]
 }
 
+export type Flight = {
+  airtime: number,
+  arriveList: Date[],
+  departList: Date[],
+  path: string[],
+  'total time': number
+}
+
 export async function getAllAirplanesByPassenger(passengerId: Passenger["id"]): Promise<Array<Airplane>> {
   const airplanes = await prisma.passenger.findUnique({ where: { id: passengerId } }).airplanes()
   return airplanes ? airplanes : [];
 }
 
-export async function getAllAirportsByPassenger(passengerId: Passenger["id"]): Promise<Array<Airports>> {
+export async function getAllAirportsByPassenger(passengerId: Passenger["id"]): Promise<Array<Airport>> {
   const airports = await prisma.passenger.findUnique({ where: { id: passengerId } }).airports()
   return airports ? airports : [];
+}
+
+export async function getAltFlights(current_airport: Airport, final_destination: Airport): Promise<Array<Flight>> {
+
+  // const altFlights_cost = await fetch(`https://beeline.herokuapp.com/cost/${current_airport.name}/${final_destination.name}`).then(res => res.json()).catch(err => console.error(err))
+  const altFlights_time = await fetch(`https://beeline.herokuapp.com/time/${current_airport.name}/${final_destination.name}`).then(res => res.json()).catch(err => console.error(err))
+
+  return altFlights_time.sort((a, b) => a['total time'] - b['total time']).slice(0, 5)
 }
 
 export async function getPassengerById(id: Passenger["id"]): Promise<Passenger | undefined> {

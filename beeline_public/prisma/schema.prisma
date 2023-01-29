@@ -14,7 +14,6 @@ model Passenger {
   password  Password?
   airplanes Airplane[] @relation("AirplaneToPassenger")
   airports  Airport[]  @relation("AirportToPassenger")
-  seats     Seat[]     @relation("PassengerToSeat")
 }
 
 model Password {
@@ -37,17 +36,7 @@ model Airplane {
   id             String      @id @default(cuid())
   departure_time DateTime
   arrival_time   DateTime
-  seats          Seat[]
   airports       Airport[]   @relation("AirplaneToAirport")
   passengers     Passenger[] @relation("AirplaneToPassenger")
 }
 
-model Seat {
-  id          String      @id @default(cuid())
-  seat_number Int
-  seat_row    Int
-  seat_class  String
-  airplaneId  String
-  airplane    Airplane    @relation(fields: [airplaneId], references: [id])
-  passengers  Passenger[] @relation("PassengerToSeat")
-}
