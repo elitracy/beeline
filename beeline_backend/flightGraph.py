@@ -83,8 +83,8 @@ def lowest_time(org, dest):
         
         object = {
             "path": flightpath,
-            "airtime": airTime,
             "total time": newTime,
+            "airtime": airTime,
         }
         lowestTimes.append(object)
 
@@ -120,7 +120,7 @@ def lowest_cost(org, dest):
         edgeStart = path.__getattribute__('nodes')[index]
         edgeEnd = path.__getattribute__('nodes')[index + 1]
         priceGraph.remove_edge(edgeStart, edgeEnd)
-        
+
     return lowestCosts
 
 
