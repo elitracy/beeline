@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from dijkstar import Graph, find_path
 import random
 
@@ -38,7 +38,7 @@ for row in data[:800]:
     # weightList.append(distance)
     # distanceGraph.add_edge(origin, destination, distance)
     priceGraph.add_edge(origin, destination, price)
-        
+    # print(row.get('ORD'))
     # Add the destination to the list of values associated with the origin key
     adj_list[origin].append( (destination,distance,price) )
 

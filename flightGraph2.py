@@ -2,6 +2,7 @@ from queue import PriorityQueue
 import json
 from collections import defaultdict
 import random
+import Flight
 # from dijkstar import Graph
 with open("flights.json") as file:
     data = json.load(file)
@@ -19,7 +20,7 @@ for row in data[:800]:
     duration = row["duration"]
     price = 0
 
-    adj_list['origin'].append(Flight(destination, price, duration))
+    adj_list["origin"].append(Flight(destination, price, duration))
 
 
 def dijkstra(graph, source):
