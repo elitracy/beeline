@@ -17,19 +17,55 @@ with open("flights.json") as file:
 timeGraph = Graph()
 priceGraph = Graph()
 
+adj_list = defaultdict(list)
+flightTime = {}
+
 for flight in data:
     origin = flight["origin"]["code"]
     destination = flight["destination"]["code"]
-    duration = round(flight['duration']['hours'] + (flight['duration']['minutes'] / 60), 3)
+    duration = flight["duration"]["hours"]*60 + flight["duration"]["minutes"]
     price = flight['price']
     timeGraph.add_edge(origin, destination, duration)
     priceGraph.add_edge(origin, destination, price)
+
+    adj_list[origin].append((destination, price))
+    arrivalTime = flight.get("arrivalTime")
+    departureTime = flight.get("departureTime")
+
+    flightTime[(origin, destination)] = [arrivalTime[11:16]]
+
+def heuristic(u, v, e, prev):
+    diff = 0
+    if prev[0] != None:
+        diff = time_diff(time_converter(flightTime[(prev[0], u)]), time_converter(flightTime[(u, v)]))
+    return round(e + diff, 2)
+
+def time_converter(time):
+    hours = int(time[0][0:2])
+    minutes = int(time[0][3:5])
+
+    return [hours, minutes]
+
+def time_diff(departure, arrival):
+    
+    hours = departure[0] - arrival[0]
+    minutes = departure[1] - arrival[1]
+    
+    
+    if hours < 0:
+        hours = 12 + hours
+
+    hourtominutes = hours * 60
+
+    total = minutes + hourtominutes
+
+    return total
 
 lowestTime =[]
 cheapestCost = []
 while len(lowestTime) < 10:
     # Lowest time 
-    path = find_path(timeGraph, org, dest)
+    path = find_path(timeGraph, org, dest, heuristic_func=heuristic)
     lowestTime.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
     costs = path.__getattribute__('costs')
     lowest_val = min(costs)
@@ -38,7 +74,7 @@ while len(lowestTime) < 10:
     edgeEnd = path.__getattribute__('nodes')[index + 1]
     timeGraph.remove_edge(edgeStart, edgeEnd)
 
-    #Cheapest cost
+    # Cheapest cost
     path = find_path(priceGraph, org, dest)
     cheapestCost.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
     costs = path.__getattribute__('costs')
@@ -47,7 +83,8 @@ while len(lowestTime) < 10:
     edgeStart = path.__getattribute__('nodes')[index]
     edgeEnd = path.__getattribute__('nodes')[index + 1]
     priceGraph.remove_edge(edgeStart, edgeEnd)
-    
+
+
 print("Lowest Time")
 for dist in lowestTime:
     print(dist)
