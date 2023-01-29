@@ -20,6 +20,7 @@ export default function Index() {
                   <span className="block uppercase text-yellow-500 drop-shadow-xl">
                     Beeline
                   </span>
+                  <img src={require("app/images/bee-removebg-preview.png")} className=" mx-auto w-20 h-20"/>
                 </h1>
                 <p className="mx-auto text-slate-400">By American Airlines</p>
               </div>
