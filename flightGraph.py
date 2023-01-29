@@ -1,6 +1,5 @@
 import json
 from collections import defaultdict
-import matplotlib.pyplot as plt
 from dijkstar import Graph
 from dijkstra import find_path
 
