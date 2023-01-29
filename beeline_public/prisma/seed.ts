@@ -33,15 +33,15 @@ async function seed() {
             },
           },
           {
-            departure_time: new Date("2022-06-01T09:00:00.000Z"),
-            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            departure_time: new Date("2022-06-01T14:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T14:45:00.000Z"),
             airports: {
               connect: [{ name: "DFW" }, { name: "IAH" }]
             },
           },
           {
-            departure_time: new Date("2022-06-01T09:00:00.000Z"),
-            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            departure_time: new Date("2022-06-01T16:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T18:30:00.000Z"),
             airports: {
               connect: [{ name: "IAH" }, { name: "ATL" }]
             },
