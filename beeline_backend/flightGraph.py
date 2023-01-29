@@ -16,7 +16,7 @@ with open("beeline_backend/flights.json") as file:
 timeGraph = Graph()
 priceGraph = Graph()
 
-adj_list = defaultdict(list)
+visited = set()
 flightTime = {}
 
 for flight in data:
@@ -24,10 +24,14 @@ for flight in data:
     destination = flight["destination"]["code"]
     duration = flight["duration"]["hours"]*60 + flight["duration"]["minutes"]
     price = flight['price']
+    ## For the sake of this demostration data, I am not allowing multiple flights to the same desitination from one airport.
+    ## The djsktras path for multiple flights does work, however, the method we use for calculating layovers times doesn't allow this.
+    if (origin,destination) in visited:
+        continue
     timeGraph.add_edge(origin, destination, duration)
     priceGraph.add_edge(origin, destination, price)
 
-    adj_list[origin].append((destination, price))
+    visited.add( (origin,destination) )
     arrivalTime = flight.get("arrivalTime")
     departureTime = flight.get("departureTime")
 
@@ -37,7 +41,7 @@ def heuristic(u, v, e, prev):
     diff = 0
     if prev[0] != None:
         diff = time_diff(time_converter(flightTime[(prev[0], u)]), time_converter(flightTime[(u, v)]))
-    return round(e + diff, 2)
+    return diff
 
 def time_converter(time):
     hours = int(time[0][0:2])
@@ -62,12 +66,28 @@ def time_diff(departure, arrival):
 
 
 def lowest_time(org, dest):
-    lowestTime =[]
+    lowestTimes = []
 
-    while len(lowestTime) < 10:
+    while len(lowestTimes) < 10:
         # Lowest time 
         path = find_path(timeGraph, org, dest, heuristic_func=heuristic)
-        lowestTime.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
+
+        flightpath = path.__getattribute__('nodes')
+        airTime = path.__getattribute__('total_cost')
+        newTime = airTime
+
+        for i in range(len(flightpath) - 2):
+            depart = time_converter(flightTime[(flightpath[i], flightpath[i+1])])
+            arrive = time_converter(flightTime[(flightpath[i+1], flightpath[i+2])])
+            newTime += time_diff(depart, arrive)
+        
+        object = {
+            "path": flightpath,
+            "airtime": airTime,
+            "total time": newTime,
+        }
+        lowestTimes.append(object)
+
         costs = path.__getattribute__('costs')
         lowest_val = min(costs)
         index = costs.index(lowest_val)
@@ -75,27 +95,34 @@ def lowest_time(org, dest):
         edgeEnd = path.__getattribute__('nodes')[index + 1]
         timeGraph.remove_edge(edgeStart, edgeEnd)
 
-    return lowestTime
+    return lowestTimes
+
 
 def lowest_cost(org, dest):
-    lowestCost = []
+    lowestCosts = []
 
-    while len(lowestCost) < 10:
+    while len(lowestCosts) < 10:
         # Cheapest cost
         path = find_path(priceGraph, org, dest)
-        lowestCost.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
+
+        flightpath = path.__getattribute__('nodes')
+        prices = path.__getattribute__('total_cost')
+
+        object = {
+            "path": flightpath,
+            "total cost": prices,
+        }
+        lowestCosts.append(object)
+
         costs = path.__getattribute__('costs')
         lowest_val = min(costs)
         index = costs.index(lowest_val)
         edgeStart = path.__getattribute__('nodes')[index]
         edgeEnd = path.__getattribute__('nodes')[index + 1]
         priceGraph.remove_edge(edgeStart, edgeEnd)
-    
-    return lowestCost
+        
+    return lowestCosts
 
-# print("Lowest Time")
-# for dist in lowestTime:
-#     print(dist)
 
 # print("Cheapest Cost")
 # for dist in cheapestCost:
