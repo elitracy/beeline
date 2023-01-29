@@ -3,6 +3,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from dijkstar import Graph
 from dijkstra import find_path
+
 import random
 
 org = input("Enter the origin airport code: ")

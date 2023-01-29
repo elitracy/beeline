@@ -3,7 +3,7 @@ from collections import namedtuple
 from heapq import heappush, heappop
 from inspect import ismethod
 from itertools import count
-
+from data import sample_data
 
 PathInfo = namedtuple("PathInfo", ("nodes", "edges", "costs", "total_cost"))
 """Info for shortest path found between start and destination nodes.
@@ -48,6 +48,7 @@ def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
         graph, s, d, annex, cost_func, heuristic_func
     )
     return extract_shortest_path_from_predecessor_list(predecessors, d)
+
 
 
 def single_source_shortest_paths(
@@ -149,8 +150,8 @@ def single_source_shortest_paths(
             continue
 
         # The edge crossed to get to u
-        prev_e = predecessors[u][1]
-
+        prev_e = predecessors[u]
+        # print(predecessors[u])
         # Check each of u's neighboring nodes to see if we can update
         # its cost by reaching it from u.
         for v in neighbors:
@@ -162,7 +163,7 @@ def single_source_shortest_paths(
 
             # Get the cost of the edge running from u to v.
             cost_of_e = cost_func(u, v, e, prev_e) if cost_func else e
-
+            # print(f'{neighbors[v]}, {cost_of_e}')
             # Cost of s to u plus the cost of u to v across e--this
             # is *a* cost from s to v that may or may not be less than
             # the current known cost to v.
