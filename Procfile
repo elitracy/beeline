@@ -1,0 +1,1 @@
+web: gunicorn --pythonpath beeline_backend beeline_backend.app:app
