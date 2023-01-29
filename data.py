@@ -1,5 +1,6 @@
 import json
 import random
+
 with open("flights.json") as file:
     data = json.load(file)
 
