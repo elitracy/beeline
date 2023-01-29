@@ -36,7 +36,13 @@ class NoPathError(DijkstarError):
     """Raised when a path can't be found to a specified node."""
 
 
-def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
+def heuristic(u, v, e, prev_v):
+    if prev_v == "ORD" and u == "DEN":
+        return 0
+    else:
+        return 0
+
+def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=heuristic):
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
     This is a wrapper around :func:`single_source_shortest_paths` that
     extracts path info from the the predecessor list. Look there for a
@@ -149,7 +155,7 @@ def single_source_shortest_paths(
             continue
 
         # The edge crossed to get to u
-        prev_e = predecessors[u][1]
+        prev_v = predecessors[u][0]
 
         # Check each of u's neighboring nodes to see if we can update
         # its cost by reaching it from u.
@@ -161,7 +167,7 @@ def single_source_shortest_paths(
             e = neighbors[v]
 
             # Get the cost of the edge running from u to v.
-            cost_of_e = cost_func(u, v, e, prev_e) if cost_func else e
+            cost_of_e = cost_func(u, v, e, prev_v) if cost_func else e
 
             # Cost of s to u plus the cost of u to v across e--this
             # is *a* cost from s to v that may or may not be less than
@@ -174,7 +180,7 @@ def single_source_shortest_paths(
             # to keep us moving in the right direction (generally more
             # toward the goal instead of away from it).
             if heuristic_func:
-                additional_cost = heuristic_func(u, v, e, prev_e)
+                additional_cost = heuristic_func(u, v, e, prev_v)
                 cost_of_s_to_u_plus_cost_of_e += additional_cost
 
             if v not in costs or costs[v] > cost_of_s_to_u_plus_cost_of_e:
