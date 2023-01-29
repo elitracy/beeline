@@ -17,10 +17,10 @@ async function seed() {
       name: "John Doe",
       airports: {
         create: [
-          { name: "IAH", city: "Houston", state: "TX", country: "USA" },
-          { name: "RNO", city: "Reno", state: "NV", country: "USA" },
-          { name: "SET", city: "Seattle", state: "WA", country: "USA" },
-          { name: "SFO", city: "San Fransisco", state: "CA", country: "USA" }
+          { name: "DEN", city: "Houston", state: "TX", country: "USA" },
+          { name: "DFW", city: "Reno", state: "NV", country: "USA" },
+          { name: "IAH", city: "Seattle", state: "WA", country: "USA" },
+          { name: "ATL", city: "San Fransisco", state: "CA", country: "USA" }
         ]
       },
       airplanes: {
@@ -29,40 +29,22 @@ async function seed() {
             departure_time: new Date("2022-06-01T09:00:00.000Z"),
             arrival_time: new Date("2022-06-01T12:00:00.000Z"),
             airports: {
-              connect: [{ name: "IAH" }, { name: "RNO" }, { name: "SET" }, { name: "SFO" }]
+              connect: [{ name: "DEN" }, { name: "DFW" }]
             },
-            seats: {
-              create: [
-                { seat_number: 1, seat_row: 1, seat_class: "economy" },
-                { seat_number: 2, seat_row: 1, seat_class: "economy" }
-              ]
-            }
           },
           {
             departure_time: new Date("2022-06-01T09:00:00.000Z"),
             arrival_time: new Date("2022-06-01T12:00:00.000Z"),
             airports: {
-              connect: [{ name: "RNO" }, { name: "SET" }]
+              connect: [{ name: "DFW" }, { name: "IAH" }]
             },
-            seats: {
-              create: [
-                { seat_number: 1, seat_row: 1, seat_class: "economy" },
-                { seat_number: 2, seat_row: 1, seat_class: "economy" }
-              ]
-            }
           },
           {
             departure_time: new Date("2022-06-01T09:00:00.000Z"),
             arrival_time: new Date("2022-06-01T12:00:00.000Z"),
             airports: {
-              connect: [{ name: "SET" }, { name: "SFO" }]
+              connect: [{ name: "IAH" }, { name: "ATL" }]
             },
-            seats: {
-              create: [
-                { seat_number: 1, seat_row: 1, seat_class: "economy" },
-                { seat_number: 2, seat_row: 1, seat_class: "economy" }
-              ]
-            }
           }
         ]
       },
@@ -93,12 +75,6 @@ async function seed() {
             airports: {
               connect: [{ name: "LAX" }, { name: "JFK" }]
             },
-            seats: {
-              create: [
-                { seat_number: 1, seat_row: 1, seat_class: "economy" },
-                { seat_number: 2, seat_row: 1, seat_class: "economy" }
-              ]
-            }
           }
         ]
       },
