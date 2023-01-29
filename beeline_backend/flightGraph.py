@@ -122,8 +122,3 @@ def lowest_cost(org, dest):
         priceGraph.remove_edge(edgeStart, edgeEnd)
 
     return lowestCosts
-
-
-# print("Cheapest Cost")
-# for dist in cheapestCost:
-#     print(dist)
