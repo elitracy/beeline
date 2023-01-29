@@ -1,63 +1,57 @@
 import json
 from collections import defaultdict
-# import matplotlib.pyplot as plt
-from dijkstar import Graph, find_path
+import matplotlib.pyplot as plt
+from dijkstar import Graph
+from dijkstra import find_path
+
 import random
 
-# CONSTANTS
-# Create a set of cities that are the most popular in the US
-popularCities = {"ORD", "ATL", "DFW", "DEN", "LAX", "SFO", "JFK", "PHX"}
+org = input("Enter the origin airport code: ")
+dest = input("Enter the destination airport code: ")
 
-# Main
 # Read the JSON file
 with open("flights.json") as file:
     data = json.load(file)
 
-# Create an empty dictionary for the adjacency list
+# Create an empty dictionary for the time graph
 timeGraph = Graph()
 priceGraph = Graph()
 
-adj_list = defaultdict(list)
-
-# Iterate over the rows of the JSON data
-# Shuffle the data
-random.shuffle(data)
-
-for row in data[:800]:
-    origin = row["origin"]["code"]
-    destination = row["destination"]["code"]
-    distance = row["distance"]
-    
-    time = row.get("arrivalTime")[11:][0:8]
-    print(time)
-    # print(time_zone)
-    # Cost function based on distance, adding extra weight if in popular cities set and also having a random aspect to it
-    price = ((distance * 0.1 if origin in popularCities else random.randint(100, 400))) / 2
-    
-    distance = distance / 1000.0
-    # weightList.append(distance)
-    # distanceGraph.add_edge(origin, destination, distance)
+for flight in data:
+    origin = flight["origin"]["code"]
+    destination = flight["destination"]["code"]
+    duration = round(flight['duration']['hours'] + (flight['duration']['minutes'] / 60), 3)
+    price = flight['price']
+    timeGraph.add_edge(origin, destination, duration)
     priceGraph.add_edge(origin, destination, price)
-    # print(row.get('ORD'))
-    # Add the destination to the list of values associated with the origin key
-    adj_list[origin].append( (destination,distance,price) )
 
+lowestTime =[]
+cheapestCost = []
+while len(lowestTime) < 10:
+    # Lowest time 
+    path = find_path(timeGraph, org, dest)
+    lowestTime.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
+    costs = path.__getattribute__('costs')
+    lowest_val = min(costs)
+    index = costs.index(lowest_val)
+    edgeStart = path.__getattribute__('nodes')[index]
+    edgeEnd = path.__getattribute__('nodes')[index + 1]
+    timeGraph.remove_edge(edgeStart, edgeEnd)
 
+    #Cheapest cost
+    path = find_path(priceGraph, org, dest)
+    cheapestCost.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
+    costs = path.__getattribute__('costs')
+    lowest_val = min(costs)
+    index = costs.index(lowest_val)
+    edgeStart = path.__getattribute__('nodes')[index]
+    edgeEnd = path.__getattribute__('nodes')[index + 1]
+    priceGraph.remove_edge(edgeStart, edgeEnd)
+    
+print("Lowest Time")
+for dist in lowestTime:
+    print(dist)
 
-# def shortestDists():
-#     shortestDist =[]
-#     path = find_path(distanceGraph, "ORD", "IAH")
-#     shortestDist.append((path.__getattribute__('nodes'), path.__getattribute__('total_cost')))
-
-
-# print("Distance Graph:")
-
-# distanceGraph.remove_edge("ORD", "IAH")
-# print(path.__getattribute__('total_cost'))
-# print(adj_list['ORD'])
-
-
-# print("Price Graph:")
-# print(find_path(priceGraph, "ORD", "IAH"))
-
-# print(data.get(arrivalTime))
+print("Cheapest Cost")
+for dist in cheapestCost:
+    print(dist)
