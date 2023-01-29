@@ -16,8 +16,10 @@ with open("beeline_backend/flights.json") as file:
 timeGraph = Graph()
 priceGraph = Graph()
 
-visited = set()
+# visited = set()
 flightTime = {}
+aTime = {}
+dTime = {}
 
 for flight in data:
     origin = flight["origin"]["code"]
@@ -26,16 +28,40 @@ for flight in data:
     price = flight['price']
     ## For the sake of this demostration data, I am not allowing multiple flights to the same desitination from one airport.
     ## The djsktras path for multiple flights does work, however, the method we use for calculating layovers times doesn't allow this.
-    if (origin,destination) in visited:
-        continue
+    # if (origin,destination) in visited:
+    #     continue
     timeGraph.add_edge(origin, destination, duration)
     priceGraph.add_edge(origin, destination, price)
 
-    visited.add( (origin,destination) )
+    # visited.add( (origin,destination) )
     arrivalTime = flight.get("arrivalTime")
     departureTime = flight.get("departureTime")
 
     flightTime[(origin, destination)] = [arrivalTime[11:16]]
+    aTime[(origin, destination)] = [arrivalTime]
+    dTime[(origin, destination)] = [departureTime]
+
+def repopulate():
+    # Create an empty dictionary for the time graph
+    for flight in data:
+        origin = flight["origin"]["code"]
+        destination = flight["destination"]["code"]
+        duration = flight["duration"]["hours"]*60 + flight["duration"]["minutes"]
+        price = flight['price']
+        ## For the sake of this demostration data, I am not allowing multiple flights to the same desitination from one airport.
+        ## The djsktras path for multiple flights does work, however, the method we use for calculating layovers times doesn't allow this.
+        # if (origin,destination) in visited:
+        #     continue
+        timeGraph.add_edge(origin, destination, duration)
+        priceGraph.add_edge(origin, destination, price)
+
+        # visited.add( (origin,destination) )
+        arrivalTime = flight.get("arrivalTime")
+        departureTime = flight.get("departureTime")
+
+        flightTime[(origin, destination)] = [arrivalTime[11:16]]
+        aTime[(origin, destination)] = [arrivalTime]
+        dTime[(origin, destination)] = [departureTime]
 
 def heuristic(u, v, e, prev):
     diff = 0
@@ -57,6 +83,10 @@ def time_diff(departure, arrival):
     
     if hours < 0:
         hours = 12 + hours
+    
+    if minutes < 0:
+        minutes = 60 + minutes
+        hours -= 1
 
     hourtominutes = hours * 60
 
@@ -66,9 +96,12 @@ def time_diff(departure, arrival):
 
 
 def lowest_time(org, dest):
+    repopulate()
     lowestTimes = []
 
     while len(lowestTimes) < 10:
+        departList = [dTime[(org,dest)][0]]
+        arriveList = [""]
         # Lowest time 
         path = find_path(timeGraph, org, dest, heuristic_func=heuristic)
 
@@ -77,14 +110,19 @@ def lowest_time(org, dest):
         newTime = airTime
 
         for i in range(len(flightpath) - 2):
-            depart = time_converter(flightTime[(flightpath[i], flightpath[i+1])])
-            arrive = time_converter(flightTime[(flightpath[i+1], flightpath[i+2])])
+            arriveList.append(dTime[(flightpath[i], flightpath[i+1])][0])
+            departList.append(aTime[(flightpath[i+1], flightpath[i+2])][0])
+
+            arrive = time_converter(flightTime[(flightpath[i], flightpath[i+1])])
+            depart = time_converter(flightTime[(flightpath[i+1], flightpath[i+2])])
             newTime += time_diff(depart, arrive)
         
         object = {
             "path": flightpath,
             "total time": newTime,
             "airtime": airTime,
+            "departList": departList,
+            "arriveList": arriveList,
         }
         lowestTimes.append(object)
 
@@ -99,6 +137,7 @@ def lowest_time(org, dest):
 
 
 def lowest_cost(org, dest):
+    repopulate()
     lowestCosts = []
 
     while len(lowestCosts) < 10:
