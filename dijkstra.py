@@ -36,7 +36,13 @@ class NoPathError(DijkstarError):
     """Raised when a path can't be found to a specified node."""
 
 
-def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=None):
+def heuristic(u, v, e, prev_v):
+    if prev_v == "ORD" and u == "DEN":
+        return 0
+    else:
+        return 0
+
+def find_path(graph, s, d, annex=None, cost_func=None, heuristic_func=heuristic):
     """Find the shortest path from ``s`` to ``d`` in ``graph``.
     This is a wrapper around :func:`single_source_shortest_paths` that
     extracts path info from the the predecessor list. Look there for a
@@ -175,7 +181,7 @@ def single_source_shortest_paths(
             # to keep us moving in the right direction (generally more
             # toward the goal instead of away from it).
             if heuristic_func:
-                additional_cost = heuristic_func(u, v, e, prev_e)
+                additional_cost = heuristic_func(u, v, e, prev_v)
                 cost_of_s_to_u_plus_cost_of_e += additional_cost
 
             if v not in costs or costs[v] > cost_of_s_to_u_plus_cost_of_e:
