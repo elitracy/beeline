@@ -49,7 +49,6 @@ export default function flights() {
 
   const totalHours = Math.floor((lastArrive.getTime() - firstDepart.getTime()) / 1000 / 60 / 60)
   const totalMinutes = Math.floor((lastArrive.getTime() - firstDepart.getTime()) / 1000 / 60 % 60) < 10 ? `0${Math.floor((lastArrive.getTime() - firstDepart.getTime()) / 1000 / 60 % 60)}` : Math.floor((lastArrive.getTime() - firstDepart.getTime()) / 1000 / 60 % 60)
-  const totalHoursMinutes = totalHours * 60 + (number)totalMinutes
 
   return (
     <main className="w-full h-full bg-[url(app/images/hexagon.jpg)] overflow-hidden">

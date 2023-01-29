@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 import { useOptionalPassenger } from "~/utils";
+import bee from "public/bee.png";
 
 
 
@@ -21,6 +22,7 @@ export default function Index() {
                     Beeline
                   </span>
                 </h1>
+                <img src={bee} className="w-20 h-20 mx-auto" />
                 <p className="mx-auto text-slate-400">By American Airlines</p>
               </div>
               <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
