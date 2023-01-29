@@ -1,8 +1,8 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 
-import type { User } from "~/models/user.server";
-import { getUserById } from "~/models/user.server";
+import type { Passenger } from "~/models/passenger.server";
+import { getPassengerById } from "~/models/passenger.server";
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
@@ -17,65 +17,65 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-const USER_SESSION_KEY = "userId";
+const PASSENGER_SESSION_KEY = "passengerId";
 
 export async function getSession(request: Request) {
   const cookie = request.headers.get("Cookie");
   return sessionStorage.getSession(cookie);
 }
 
-export async function getUserId(
+export async function getPassengerId(
   request: Request
-): Promise<User["id"] | undefined> {
+): Promise<Passenger["id"] | undefined> {
   const session = await getSession(request);
-  const userId = session.get(USER_SESSION_KEY);
-  return userId;
+  const passengerId = session.get(PASSENGER_SESSION_KEY);
+  return passengerId;
 }
 
-export async function getUser(request: Request) {
-  const userId = await getUserId(request);
-  if (userId === undefined) return null;
+export async function getPassenger(request: Request) {
+  const passengerId = await getPassengerId(request);
+  if (passengerId === undefined) return null;
 
-  const user = await getUserById(userId);
-  if (user) return user;
+  const passenger = await getPassengerById(passengerId);
+  if (passenger) return passenger;
 
   throw await logout(request);
 }
 
-export async function requireUserId(
+export async function requirePassesngerId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname
 ) {
-  const userId = await getUserId(request);
-  if (!userId) {
+  const passengerId = await getPassengerId(request);
+  if (!passengerId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
     throw redirect(`/login?${searchParams}`);
   }
-  return userId;
+  return passengerId;
 }
 
-export async function requireUser(request: Request) {
-  const userId = await requireUserId(request);
+export async function requirePassenger(request: Request) {
+  const passengerId = await requirePassesngerId(request);
 
-  const user = await getUserById(userId);
-  if (user) return user;
+  const passenger = await getPassengerById(passengerId);
+  if (passenger) return passenger;
 
   throw await logout(request);
 }
 
-export async function createUserSession({
+export async function createPassengerSession({
   request,
-  userId,
+  passengerId,
   remember,
   redirectTo,
 }: {
   request: Request;
-  userId: string;
+  passengerId: string;
   remember: boolean;
   redirectTo: string;
 }) {
   const session = await getSession(request);
-  session.set(USER_SESSION_KEY, userId);
+  session.set(PASSENGER_SESSION_KEY, passengerId);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await sessionStorage.commitSession(session, {

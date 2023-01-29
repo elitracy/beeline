@@ -3,14 +3,14 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { getUserId, createUserSession } from "~/session.server";
+import { getPassengerId, createPassengerSession } from "~/session.server";
 
-import { createUser, getUserByEmail } from "~/models/user.server";
+import { createPassenger, getPassengerByEmail } from "~/models/passenger.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  const passengerId = await getPassengerId(request);
+  if (passengerId) return redirect("/");
   return json({});
 }
 
@@ -41,12 +41,12 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
+  const existingPassenger = await getPassengerByEmail(email);
+  if (existingPassenger) {
     return json(
       {
         errors: {
-          email: "A user already exists with this email",
+          email: "A passenger already exists with this email",
           password: null,
         },
       },
@@ -54,11 +54,11 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await createUser(email, password);
+  const passenger = await createPassenger(email, password);
 
-  return createUserSession({
+  return createPassengerSession({
     request,
-    userId: user.id,
+    passengerId: passenger.id,
     remember: false,
     redirectTo,
   });

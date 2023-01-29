@@ -4,41 +4,79 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "rachel@remix.run";
 
-  // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
-
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
-
-  const user = await prisma.user.create({
+  //Create a test passenger seed
+  const passenger1 = await prisma.passenger.create({
     data: {
-      email,
+      email: "john@example.com",
       password: {
         create: {
-          hash: hashedPassword,
-        },
+          hash: await bcrypt.hash("password", 10)
+        }
       },
-    },
-  });
+      name: "John Doe",
+      airports: {
+        create: [
+          { name: "IAH", city: "Houston", state: "TX", country: "USA" },
+          { name: "RNO", city: "Reno", state: "NV", country: "USA" }
+        ]
+      },
+      airplanes: {
+        create: [
+          {
+            departure_time: new Date("2022-06-01T09:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            airports: {
+              connect: [{ name: "IAH" }, { name: "RNO" }]
+            },
+            seats: {
+              create: [
+                { seat_number: 1, seat_row: 1, seat_class: "economy" },
+                { seat_number: 2, seat_row: 1, seat_class: "economy" }
+              ]
+            }
+          }
+        ]
+      },
 
-  await prisma.note.create({
-    data: {
-      title: "My first note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
+    }
+  })
 
-  await prisma.note.create({
+  const passenger2 = await prisma.passenger.create({
     data: {
-      title: "My second note",
-      body: "Hello, world!",
-      userId: user.id,
-    },
-  });
+      email: "jane@example.com",
+      password: {
+        create: {
+          hash: await bcrypt.hash("password", 10)
+        }
+      },
+      name: "Jane Doe",
+      airports: {
+        create: [
+          { name: "LAX", city: "Los Angeles", state: "CA", country: "USA" },
+          { name: "JFK", city: "New York", state: "NY", country: "USA" }
+        ]
+      },
+      airplanes: {
+        create: [
+          {
+            departure_time: new Date("2022-06-01T09:00:00.000Z"),
+            arrival_time: new Date("2022-06-01T12:00:00.000Z"),
+            airports: {
+              connect: [{ name: "LAX" }, { name: "JFK" }]
+            },
+            seats: {
+              create: [
+                { seat_number: 1, seat_row: 1, seat_class: "economy" },
+                { seat_number: 2, seat_row: 1, seat_class: "economy" }
+              ]
+            }
+          }
+        ]
+      },
+
+    }
+  })
 
   console.log(`Database has been seeded. 🌱`);
 }
