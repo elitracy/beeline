@@ -101,7 +101,7 @@ def lowest_time(org, dest):
 
     while len(lowestTimes) < 10:
         departList = [dTime[(org,dest)][0]]
-        arriveList = [""]
+        arriveList = [aTime[(org,dest)][0]]
         # Lowest time 
         path = find_path(timeGraph, org, dest, heuristic_func=heuristic)
 
