@@ -3,7 +3,6 @@ from collections import namedtuple
 from heapq import heappush, heappop
 from inspect import ismethod
 from itertools import count
-from data import sample_data
 
 PathInfo = namedtuple("PathInfo", ("nodes", "edges", "costs", "total_cost"))
 """Info for shortest path found between start and destination nodes.
