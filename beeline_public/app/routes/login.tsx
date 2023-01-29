@@ -3,13 +3,13 @@ import { json, redirect } from "@remix-run/node";
 import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 
-import { createUserSession, getUserId } from "~/session.server";
-import { verifyLogin } from "~/models/user.server";
+import { createPassengerSession, getPassengerId } from "~/session.server";
+import { verifyLogin } from "~/models/passenger.server";
 import { safeRedirect, validateEmail } from "~/utils";
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  const passengerId = await getPassengerId(request);
+  if (passengerId) return redirect("/");
   return json({});
 }
 
@@ -20,9 +20,7 @@ export async function action({ request }: ActionArgs) {
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/flights");
   const remember = formData.get("remember")
 
-  if (!validateEmail(email)) {
-    return json(
-      { errors: { email: "Email is invalid", password: null } },
+  if (!validateEmail(email)) { return json( { errors: { email: "Email is invalid", password: null } },
       { status: 400 }
     );
   }
@@ -41,18 +39,18 @@ export async function action({ request }: ActionArgs) {
     );
   }
 
-  const user = await verifyLogin(email, password);
+  const passenger = await verifyLogin(email, password);
 
-  if (!user) {
+  if (!passenger) {
     return json(
       { errors: { email: "Invalid email or password", password: null } },
       { status: 400 }
     );
   }
 
-  return createUserSession({
+  return createPassengerSession({
     request,
-    userId: user.id,
+    passengerId: passenger.id,
     remember: remember === "on" ? true : false,
     redirectTo,
   });
@@ -80,8 +78,10 @@ export default function LoginPage() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <div className="flex min-h-full flex-col justify-center bg-[url(app/images/hexagon.jpg)]">
+        <div className="relative shadow-2xl sm:overflow-hidden sm:rounded-3xl bg-white w-1/3 mx-auto">
+      <div className="mx-auto w-full max-w-md px-8 pt-12 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-20 lg:pt-20">
+        <h3 className="mx-auto border-gray-400 text-2xl text-center pb-8 drop-shadow-md uppercase font-extrabold tracking-tight">Log In</h3>
         <Form method="post" className="space-y-6">
           <div>
             <label
@@ -101,7 +101,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded-lg border border-gray-500 px-2 py-1 text-lg outline-none"
               />
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -127,7 +127,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded-lg border border-gray-500 px-2 py-1 text-lg outline-none"
               />
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -140,7 +140,7 @@ export default function LoginPage() {
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button
             type="submit"
-            className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+            className="w-full rounded-lg bg-yellow-500  py-2 px-4 text-white hover:scale-95 transition-all ease-in-out duration-200"
           >
             Log in
           </button>
@@ -150,29 +150,18 @@ export default function LoginPage() {
                 id="remember"
                 name="remember"
                 type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="h-4 w-4 rounded-lg"
               />
               <label
                 htmlFor="remember"
-                className="ml-2 block text-sm text-gray-900"
+                className="ml-2 block text-sm appearance-none checked:bg-yellow-500"
               >
                 Remember me
               </label>
             </div>
-            <div className="text-center text-sm text-gray-500">
-              Don't have an account?{" "}
-              <Link
-                className="text-blue-500 underline"
-                to={{
-                  pathname: "/join",
-                  search: searchParams.toString(),
-                }}
-              >
-                Sign up
-              </Link>
-            </div>
           </div>
         </Form>
+      </div>
       </div>
     </div>
   );

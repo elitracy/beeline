@@ -1,11 +1,20 @@
-import { json } from "@remix-run/node";
+import type { Password } from "@prisma/client";
+import { prisma } from "~/db.server";
+import bcrypt from "bcryptjs";
+
 type Flight = {
-  id: String,
-  source_airport: String,
-  destination_airport: String,
-  departure_time: String,
-  arrival_time: String,
-  duration: String,
+  id: string,
+  source_airport: string,
+  destination_airport: string,
+  departure_time: string,
+  arrival_time: string,
+  duration: string,
+}
+
+export type Passenger = {
+  id: string,
+  name: string,
+  email: string,
 }
 
 const data = [
@@ -45,4 +54,62 @@ export async function getFlight(flightId: String): Promise<Flight | undefined> {
         const flight = data.find(f => f.id === flightId);
         resolve(flight);
     });
+}
+
+export async function getPassengerById(id: Passenger["id"]) {
+  return prisma.passenger.findUnique({ where: { id } });
+}
+
+export async function getPassengerByEmail(email: Passenger["email"]) {
+  return prisma.passenger.findUnique({ where: { email } });
+}
+
+export async function createPassenger(email: Passenger["email"], password: string) {
+  const hashedPassword = bcrypt.hash(password, 10);
+
+  return prisma.passenger.create({
+    data: {
+      email,
+      password: {
+        create: {
+          hash: hashedPassword,
+        },
+      },
+    },
+  });
+}
+
+export async function deletePassengerByEmail(email: Passenger["email"]) {
+  return prisma.passenger.delete({ where: { email } });
+}
+
+export async function verifyLogin(
+  email: Passenger["email"],
+  password: Password["hash"]
+) {
+  const passengerWithPassword = await prisma.passenger.findUnique({
+    where: { email },
+    include: {
+      password: true,
+    },
+  });
+
+  if (!passengerWithPassword || !passengerWithPassword.password) {
+    return null;
+  }
+
+  console.log(password)
+  console.log(passengerWithPassword)
+  const isValid = await bcrypt.compare(
+    password,
+    passengerWithPassword.password.hash
+  );
+
+  if (!isValid) {
+    return null;
+  }
+
+  const { password: _password, ...passengerWithoutPassword } = passengerWithPassword;
+
+  return passengerWithoutPassword;
 }

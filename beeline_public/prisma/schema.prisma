@@ -1,62 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Passenger {
-  id       String    @id @default(cuid())
-  email    String    @unique
-  password Password?
-  name     String
-
-  airports  Airport[] // [source, layover, ..., destination] 
-  airplanes Airplane[] // [source, layover, ..., destination]
-  seats     Seat[] // [source, layover, ..., destination]
+  id        String     @id @default(cuid())
+  email     String     @unique
+  name      String
+  password  Password?
+  airplanes Airplane[] @relation("AirplaneToPassenger")
+  airports  Airport[]  @relation("AirportToPassenger")
+  seats     Seat[]     @relation("PassengerToSeat")
 }
 
 model Password {
-  hash String
-
-  passenger   Passenger @relation(fields: [passengerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  hash        String
   passengerId String    @unique
+  passenger   Passenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
 }
 
 model Airport {
-  id      String @id @default(cuid())
-  name    String @unique
-  city    String
-  state   String
-  country String
-
-  airplanes  Airplane[]
-  passengers Passenger[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  city       String
+  state      String
+  country    String
+  airplanes  Airplane[]  @relation("AirplaneToAirport")
+  passengers Passenger[] @relation("AirportToPassenger")
 }
 
 model Airplane {
-  id String @id @default(cuid())
-
-  airports Airport[]
-
-  passengers Passenger[]
-
-  seats Seat[]
-
+  id             String      @id @default(cuid())
   departure_time DateTime
   arrival_time   DateTime
+  seats          Seat[]
+  airports       Airport[]   @relation("AirplaneToAirport")
+  passengers     Passenger[] @relation("AirplaneToPassenger")
 }
 
 model Seat {
-  id          String @id @default(cuid())
+  id          String      @id @default(cuid())
   seat_number Int
   seat_row    Int
   seat_class  String
-
-  airplane   Airplane @relation(fields: [airplaneId], references: [id])
-  airplaneId String
-
-  passengers Passenger[]
+  airplaneId  String
+  airplane    Airplane    @relation(fields: [airplaneId], references: [id])
+  passengers  Passenger[] @relation("PassengerToSeat")
 }

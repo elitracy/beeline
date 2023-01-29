@@ -8,17 +8,17 @@ async function seed() {
   //Create a test passenger seed
   const passenger1 = await prisma.passenger.create({
     data: {
-      email: "jane@example.com",
+      email: "john@example.com",
       password: {
         create:{
-          hash: "password"
+          hash: await bcrypt.hash("password", 10)
         }
       },
-      name: "Jane Smith",
+      name: "John Smith",
       airports: {
         create: [
-          { name: "SFO", city: "San Francisco", state: "CA", country: "USA" },
-          { name: "JFK", city: "New York", state: "NY", country: "USA" }
+          { name: "IAH", city: "Houston", state: "TX", country: "USA" },
+          { name: "RNO", city: "Reno", state: "NV", country: "USA" }
         ]
       },
       airplanes: {

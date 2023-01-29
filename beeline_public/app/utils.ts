@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
-import type { User } from "~/models/user.server";
+import type { Passenger } from "~/models/passenger.server";
 
 const DEFAULT_REDIRECT = "/";
 
@@ -44,26 +44,26 @@ export function useMatchesData(
   return route?.data;
 }
 
-function isUser(user: any): user is User {
-  return user && typeof user === "object" && typeof user.email === "string";
+function isPassenger(passenger: any): passenger is Passenger {
+  return passenger && typeof passenger === "object" && typeof passenger.email === "string" && typeof passenger.name === "string";
 }
 
-export function useOptionalUser(): User | undefined {
+export function useOptionalPassenger(): Passenger | undefined {
   const data = useMatchesData("root");
-  if (!data || !isUser(data.user)) {
+  if (!data || !isPassenger(data.passenger)) {
     return undefined;
   }
-  return data.user;
+  return data.passenger;
 }
 
-export function useUser(): User {
-  const maybeUser = useOptionalUser();
-  if (!maybeUser) {
+export function usePassenger(): Passenger {
+  const maybePassenger = useOptionalPassenger();
+  if (!maybePassenger) {
     throw new Error(
-      "No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead."
+      "No passenger found in root loader, but passenger is required by usePasssenger. If passenger is optional, try useOptional instead."
     );
   }
-  return maybeUser;
+  return maybePassenger;
 }
 
 export function validateEmail(email: unknown): email is string {
