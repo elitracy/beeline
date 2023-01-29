@@ -2,6 +2,7 @@ import { json, LoaderArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getAllAirplanesByPassenger, getAllAirportsByPassenger } from "~/models/passenger.server";
 import { getPassengerId } from "~/session.server";
+import planeIcon from "public/plane.png";
 
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -49,10 +50,11 @@ export default function flights() {
               <div className="flex flex-col">
                 <div className="w-full flex flex-row justify-between">
                   <span className="flex p-2"><p>{flight.departure_time}</p> <p className="pl-2">{flight.departure_date}</p></span>
-                  <h1>{flight.arrival_time}</h1>
+                  <span className="flex p-2"><p>{flight.arrival_time}</p> <p className="pl-2">{flight.arrival_date}</p></span>
                 </div>
-                <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg">
+                <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg ">
                   <h3 className="p-2">{flight.departure_airport_name}</h3>
+                  <img className="w-10 h-10" src={planeIcon} alt="airplane" />
                   <h3 className="p-2">{flight.arrival_airport_name}</h3>
                 </div>
               </div>
