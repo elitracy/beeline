@@ -47,28 +47,96 @@ export default function flights() {
   });
 
   return (
-    <main className="w-full h-full overflow-hidden">
-      <div className="w-1/2 h-1/2 mx-auto">
-        <h1 className="text-center text-xl mb-3">Flights</h1>
-        <div className="flex flex-col justify-center items-center">
-          <div className="w-full">
-            {flights.map((flight) => (
-              <div className="flex flex-col">
-                <div className="w-full flex flex-row justify-between">
-                  <span className="flex p-2"><p>{flight.departure_time}</p> <p className="pl-2">{flight.departure_date}</p></span>
-                  <span className="flex p-2"><p>{flight.arrival_time}</p> <p className="pl-2">{flight.arrival_date}</p></span>
-                </div>
-                <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg ">
-                  <h3 className="p-2">{flight.departure_airport_name}</h3>
-                  <img className="w-10 h-10" src={planeIcon} alt="airplane" />
-                  <h3 className="p-2">{flight.arrival_airport_name}</h3>
+    <main className="w-full h-full bg-[url(app/images/hexagon.jpg)] overflow-hidden">
+        <div className="grid grid-cols-2 gap-0 w-full h-full">
+          <div className="grid grid-rows-2 gap-0 w-full h-full ">
+            <div className="relative sm:pb-12 sm:pt-8 h-full">
+              <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 h-full ">
+                <div className="relative shadow-2xl sm:overflow-hidden sm:rounded-3xl bg-white h-full overflow-scroll">
+                  <div className="relative px-4 pt-12 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-0 lg:pt-16 h-full">
+                    <div className="flex flex-col">
+                      <h1 className="text-center text-xl mb-3">Flights</h1>
+                      <div className="flex flex-col justify-center items-center">
+                        <div className="w-full">
+                          {flights.map((flight) => (
+                            <div className="flex flex-col">
+                              <div className="w-full flex flex-row justify-between">
+                                <span className="flex p-2"><p>{flight.departure_time}</p> <p className="pl-2">{flight.departure_date}</p></span>
+                                <span className="flex p-2"><p>{flight.arrival_time}</p> <p className="pl-2">{flight.arrival_date}</p></span>
+                              </div>
+                              <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg ">
+                                <h3 className="p-2">{flight.departure_airport_name}</h3>
+                                <img className="w-10 h-10" src={planeIcon} alt="airplane" />
+                                <h3 className="p-2">{flight.arrival_airport_name}</h3>
+                              </div>
+                            </div>
+                          ))}
+                          </div>
+                        </div>    
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            ))}
+              <div className="relative sm:pb-16 sm:pt-8 w-full h-full">
+              <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 h-full">
+                <div className="relative shadow-2xl sm:overflow-hidden sm:rounded-3xl bg-white h-full">
+                  <div className="relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-20 lg:pt-16">
+                    <div className="flex flex-col">
+                      <h1 className="text-center text-xl mb-3">Past Flights</h1>
+                      <div className="flex flex-col justify-center items-center">
+                        <div className="w-full">
+                          {flights.map((flight) => (
+                            <div className="flex flex-col">
+                              <div className="w-full flex flex-row justify-between">
+                                <span className="flex p-2"><p>{flight.departure_time}</p> <p className="pl-2">{flight.departure_date}</p></span>
+                                <span className="flex p-2"><p>{flight.arrival_time}</p> <p className="pl-2">{flight.arrival_date}</p></span>
+                              </div>
+                              <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg ">
+                                <h3 className="p-2">{flight.departure_airport_name}</h3>
+                                <img className="w-10 h-10" src={planeIcon} alt="airplane" />
+                                <h3 className="p-2">{flight.arrival_airport_name}</h3>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>    
+                    
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-      </div>
+        <div className="relative sm:pb-16 sm:pt-8 h-full">
+          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 h-full">
+            <div className="relative shadow-2xl sm:overflow-hidden sm:rounded-3xl bg-white h-full">
+              <div className="relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pb-20 lg:pt-16 h-full">
+                <div className="flex flex-col">
+                  <h1 className="text-center text-xl mb-3">More Flights</h1>
+                  <div className="flex flex-col justify-center items-center">
+                    <div className="w-full">
+                      {flights.map((flight) => (
+                        <div className="flex flex-col">
+                        <div className="w-full flex flex-row justify-between">
+                          <span className="flex p-2"><p>{flight.departure_time}</p> <p className="pl-2">{flight.departure_date}</p></span>
+                          <span className="flex p-2"><p>{flight.arrival_time}</p> <p className="pl-2">{flight.arrival_date}</p></span>
+                        </div>
+                        <div className="w-full flex flex-row justify-between border-2 border-slate-300 rounded-lg ">
+                          <h3 className="p-2">{flight.departure_airport_name}</h3>
+                          <img className="w-10 h-10" src={planeIcon} alt="airplane" />
+                          <h3 className="p-2">{flight.arrival_airport_name}</h3>
+                        </div>
+                      </div>
+                      ))}
+                    </div>    
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>                   
     </main>
-  );
+    );
 }
